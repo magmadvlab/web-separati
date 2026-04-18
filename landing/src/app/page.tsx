@@ -1,26 +1,15 @@
 'use client';
 
 const portals = [
-  { role: 'Medico', path: '/medico', color: 'bg-blue-600', icon: '🩺', desc: 'Prescrizioni e pazienti' },
-  { role: 'Paziente', path: '/paziente', color: 'bg-green-600', icon: '👤', desc: 'Terapie e referti' },
-  { role: 'Farmacista', path: '/farmacista', color: 'bg-orange-500', icon: '💊', desc: 'Ordini e dispensazione' },
-  { role: 'Specialista', path: '/specialista', color: 'bg-purple-600', icon: '🔬', desc: 'Consulti e referti' },
-  { role: 'Laboratorio', path: '/laboratorio', color: 'bg-teal-600', icon: '🧪', desc: 'Prenotazioni e risultati' },
-  { role: 'Professionista', path: '/professionista', color: 'bg-indigo-600', icon: '👨‍⚕️', desc: 'Appuntamenti e assistiti' },
-  { role: 'Fornitore', path: '/fornitore', color: 'bg-gray-600', icon: '🏭', desc: 'Gestione forniture' },
-  { role: 'Admin', path: '/admin', color: 'bg-red-700', icon: '⚙️', desc: 'Pannello amministrativo' },
+  { key: 'medico',        role: 'Medico',              color: 'bg-blue-600',   icon: '🩺', desc: 'Prescrizioni e pazienti',   env: process.env.NEXT_PUBLIC_URL_MEDICO },
+  { key: 'paziente',      role: 'Paziente',             color: 'bg-green-600',  icon: '👤', desc: 'Terapie e referti',          env: process.env.NEXT_PUBLIC_URL_PAZIENTE },
+  { key: 'farmacista',    role: 'Farmacia',             color: 'bg-orange-500', icon: '💊', desc: 'Ordini e dispensazione',      env: process.env.NEXT_PUBLIC_URL_FARMACISTA },
+  { key: 'specialista',   role: 'Specialista',          color: 'bg-purple-600', icon: '🔬', desc: 'Consulti e referti',          env: process.env.NEXT_PUBLIC_URL_SPECIALISTA },
+  { key: 'laboratorio',   role: 'Laboratorio',          color: 'bg-teal-600',   icon: '🧪', desc: 'Prenotazioni e risultati',    env: process.env.NEXT_PUBLIC_URL_LABORATORIO },
+  { key: 'professionista',role: 'Professionista',       color: 'bg-indigo-600', icon: '👨‍⚕️', desc: 'Appuntamenti e assistiti',   env: process.env.NEXT_PUBLIC_URL_PROFESSIONISTA },
+  { key: 'fornitore',     role: 'Fornitore sanitario',  color: 'bg-gray-600',   icon: '🏭', desc: 'Gestione forniture',          env: process.env.NEXT_PUBLIC_URL_FORNITORE },
+  { key: 'admin',         role: 'Admin',                color: 'bg-red-700',    icon: '⚙️', desc: 'Pannello amministrativo',     env: process.env.NEXT_PUBLIC_URL_ADMIN },
 ];
-
-const envUrls: Record<string, string | undefined> = {
-  medico: process.env.NEXT_PUBLIC_URL_MEDICO,
-  paziente: process.env.NEXT_PUBLIC_URL_PAZIENTE,
-  farmacista: process.env.NEXT_PUBLIC_URL_FARMACISTA,
-  specialista: process.env.NEXT_PUBLIC_URL_SPECIALISTA,
-  laboratorio: process.env.NEXT_PUBLIC_URL_LABORATORIO,
-  professionista: process.env.NEXT_PUBLIC_URL_PROFESSIONISTA,
-  fornitore: process.env.NEXT_PUBLIC_URL_FORNITORE,
-  admin: process.env.NEXT_PUBLIC_URL_ADMIN,
-};
 
 export default function LandingPage() {
   return (
@@ -30,23 +19,24 @@ export default function LandingPage() {
           <h1 className="text-4xl font-bold mb-2">RicettaZero</h1>
           <p className="text-gray-400">Architettura separata per ruolo — seleziona il tuo portale</p>
           <span className="inline-block mt-3 px-3 py-1 text-xs bg-yellow-600/30 text-yellow-300 rounded-full border border-yellow-600/50">
-            Ambiente di test — v2 separata
+            v2 — frontend separati
           </span>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {portals.map(({ role, path, color, icon, desc }) => {
-            const key = path.replace('/', '');
-            const url = envUrls[key] ?? `http://localhost:300${portals.findIndex(p => p.path === path) + 1}`;
+          {portals.map(({ key, role, color, icon, desc, env }) => {
+            const url = env;
+            const ready = !!url;
             return (
               <a
-                key={role}
-                href={url}
-                className={`${color} rounded-xl p-6 flex flex-col gap-2 hover:opacity-90 transition-opacity cursor-pointer`}
+                key={key}
+                href={ready ? url : undefined}
+                className={`${color} rounded-xl p-6 flex flex-col gap-2 transition-opacity ${ready ? 'hover:opacity-90 cursor-pointer' : 'opacity-40 cursor-not-allowed'}`}
               >
                 <span className="text-3xl">{icon}</span>
                 <span className="font-semibold text-lg">{role}</span>
                 <span className="text-sm opacity-80">{desc}</span>
+                {!ready && <span className="text-xs mt-1 opacity-60">— in configurazione</span>}
               </a>
             );
           })}
@@ -54,10 +44,10 @@ export default function LandingPage() {
 
         <div className="mt-10 text-center">
           <a
-            href={process.env.NEXT_PUBLIC_URL_LEGACY ?? 'https://web-production-xxxx.up.railway.app'}
+            href={process.env.NEXT_PUBLIC_URL_LEGACY ?? 'https://ricettazero.up.railway.app'}
             className="text-sm text-gray-500 hover:text-gray-300 underline"
           >
-            ← Torna alla versione precedente (monolite)
+            ← Versione precedente (monolite)
           </a>
         </div>
       </div>
