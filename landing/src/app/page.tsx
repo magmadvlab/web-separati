@@ -1,14 +1,17 @@
 'use client';
 
+const BASE = process.env.NEXT_PUBLIC_LEGACY_URL ?? 'https://ricettazero.up.railway.app';
+
 const portals = [
-  { key: 'medico',        role: 'Medico',              color: 'bg-blue-600',   icon: '🩺', desc: 'Prescrizioni e pazienti',   env: process.env.NEXT_PUBLIC_URL_MEDICO },
-  { key: 'paziente',      role: 'Paziente',             color: 'bg-green-600',  icon: '👤', desc: 'Terapie e referti',          env: process.env.NEXT_PUBLIC_URL_PAZIENTE },
-  { key: 'farmacista',    role: 'Farmacia',             color: 'bg-orange-500', icon: '💊', desc: 'Ordini e dispensazione',      env: process.env.NEXT_PUBLIC_URL_FARMACISTA },
-  { key: 'specialista',   role: 'Specialista',          color: 'bg-purple-600', icon: '🔬', desc: 'Consulti e referti',          env: process.env.NEXT_PUBLIC_URL_SPECIALISTA },
-  { key: 'laboratorio',   role: 'Laboratorio',          color: 'bg-teal-600',   icon: '🧪', desc: 'Prenotazioni e risultati',    env: process.env.NEXT_PUBLIC_URL_LABORATORIO },
-  { key: 'professionista',role: 'Professionista',       color: 'bg-indigo-600', icon: '👨‍⚕️', desc: 'Appuntamenti e assistiti',   env: process.env.NEXT_PUBLIC_URL_PROFESSIONISTA },
-  { key: 'fornitore',     role: 'Fornitore sanitario',  color: 'bg-gray-600',   icon: '🏭', desc: 'Gestione forniture',          env: process.env.NEXT_PUBLIC_URL_FORNITORE },
-  { key: 'admin',         role: 'Admin',                color: 'bg-red-700',    icon: '⚙️', desc: 'Pannello amministrativo',     env: process.env.NEXT_PUBLIC_URL_ADMIN },
+  { key: 'medico',         role: 'Medico',             color: 'bg-blue-600',   icon: '🩺', desc: 'Prescrizioni e pazienti',  url: process.env.NEXT_PUBLIC_URL_MEDICO        ?? `${BASE}/medico/login` },
+  { key: 'paziente',       role: 'Paziente',            color: 'bg-green-600',  icon: '👤', desc: 'Terapie e referti',         url: process.env.NEXT_PUBLIC_URL_PAZIENTE      ?? `${BASE}/paziente/dashboard` },
+  { key: 'farmacista',     role: 'Farmacia',            color: 'bg-orange-500', icon: '💊', desc: 'Ordini e dispensazione',    url: process.env.NEXT_PUBLIC_URL_FARMACISTA    ?? `${BASE}/farmacia/ordini` },
+  { key: 'delivery',       role: 'Delivery',            color: 'bg-yellow-600', icon: '🚚', desc: 'Consegne e logistica',      url: process.env.NEXT_PUBLIC_URL_DELIVERY      ?? `${BASE}/delivery/dashboard` },
+  { key: 'specialista',    role: 'Specialista',         color: 'bg-purple-600', icon: '🔬', desc: 'Consulti e referti',        url: process.env.NEXT_PUBLIC_URL_SPECIALISTA   ?? `${BASE}/specialista` },
+  { key: 'laboratorio',    role: 'Laboratorio',         color: 'bg-teal-600',   icon: '🧪', desc: 'Prenotazioni e risultati', url: process.env.NEXT_PUBLIC_URL_LABORATORIO   ?? `${BASE}/laboratorio/dashboard` },
+  { key: 'professionista', role: 'Professionista',      color: 'bg-indigo-600', icon: '👨‍⚕️', desc: 'Appuntamenti e assistiti', url: process.env.NEXT_PUBLIC_URL_PROFESSIONISTA ?? `${BASE}/professionista/appuntamenti` },
+  { key: 'fornitore',      role: 'Fornitore sanitario', color: 'bg-gray-600',   icon: '🏭', desc: 'Gestione forniture',        url: process.env.NEXT_PUBLIC_URL_FORNITORE     ?? `${BASE}/fornitore` },
+  { key: 'admin',          role: 'Admin',               color: 'bg-red-700',    icon: '⚙️', desc: 'Pannello amministrativo',  url: process.env.NEXT_PUBLIC_URL_ADMIN         ?? `${BASE}/admin/dashboard` },
 ];
 
 export default function LandingPage() {
@@ -24,30 +27,25 @@ export default function LandingPage() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {portals.map(({ key, role, color, icon, desc, env }) => {
-            const url = env;
-            const ready = !!url;
-            return (
-              <a
-                key={key}
-                href={ready ? url : undefined}
-                className={`${color} rounded-xl p-6 flex flex-col gap-2 transition-opacity ${ready ? 'hover:opacity-90 cursor-pointer' : 'opacity-40 cursor-not-allowed'}`}
-              >
-                <span className="text-3xl">{icon}</span>
-                <span className="font-semibold text-lg">{role}</span>
-                <span className="text-sm opacity-80">{desc}</span>
-                {!ready && <span className="text-xs mt-1 opacity-60">— in configurazione</span>}
-              </a>
-            );
-          })}
+          {portals.map(({ key, role, color, icon, desc, url }) => (
+            <a
+              key={key}
+              href={url}
+              className={`${color} rounded-xl p-6 flex flex-col gap-2 hover:opacity-90 transition-opacity cursor-pointer`}
+            >
+              <span className="text-3xl">{icon}</span>
+              <span className="font-semibold text-lg">{role}</span>
+              <span className="text-sm opacity-80">{desc}</span>
+            </a>
+          ))}
         </div>
 
         <div className="mt-10 text-center">
           <a
-            href={process.env.NEXT_PUBLIC_URL_LEGACY ?? 'https://ricettazero.up.railway.app'}
+            href={BASE}
             className="text-sm text-gray-500 hover:text-gray-300 underline"
           >
-            ← Versione precedente (monolite)
+            ← Torna alla versione precedente (monolite)
           </a>
         </div>
       </div>
