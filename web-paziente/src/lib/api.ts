@@ -181,12 +181,15 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Handle other client errors (400, 404, 422, etc.) - show toast
-    if (error.response?.status && error.response.status >= 400 && error.response.status < 500) {
-      // Skip 401 as it's handled by refresh token logic
-      if (error.response.status !== 401) {
-        showErrorToast(error, "Errore");
-      }
+    // Handle other client errors (400, 404, 422, etc.) - show toast.
+    // 401 must continue below so the refresh-token flow can retry the request.
+    if (
+      error.response?.status &&
+      error.response.status !== 401 &&
+      error.response.status >= 400 &&
+      error.response.status < 500
+    ) {
+      showErrorToast(error, "Errore");
       return Promise.reject(error);
     }
 
